@@ -53,6 +53,7 @@ public class Cafe extends AppCompatActivity implements CartListeneur, CafeListen
     ImageView btnAddCart;
     CafeListeneur cafeListeneur;
     CartListeneur cartListeneur;
+    List<CafeModule> cafeModuleList = new ArrayList<>();
 
     @Override
     protected void onStart() {
@@ -120,7 +121,7 @@ public class Cafe extends AppCompatActivity implements CartListeneur, CafeListen
 
     }
     private void loadCafeFromFireBase() {
-        List<CafeModule> cafeModuleList = new ArrayList<>();
+        cafeModuleList = new ArrayList<>();
         FirebaseDatabase.getInstance().getReference().child("cafes")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -152,47 +153,41 @@ public class Cafe extends AppCompatActivity implements CartListeneur, CafeListen
                     }
                 });
     }
+    private void searchCafe(String query) {
+        List<CafeModule> filteredCafes = new ArrayList<>();
+        for (CafeModule cafe : cafeModuleList) {
+            if (cafe.getName().toLowerCase().contains(query.toLowerCase())) {
+                filteredCafes.add(cafe);
+            }
+        }
 
-    /*@Override
+        if (filteredCafes.isEmpty()) {
+            cafeListeneur.onCafeLoadFailed("No cafes found");
+        } else {
+            cafeListeneur.onCafeLoadSuccess(filteredCafes);
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.search, menu);
-        MenuItem item = menu.findItem(R.id.search);
-        SearchView searchView = (SearchView) item.getActionView();
+        MenuItem searchItem = menu.findItem(R.id.search);
+        SearchView searchView = (SearchView) searchItem.getActionView();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                performSearch(query);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                performSearch(newText);
-                return false;
+                searchCafe(newText);
+                return true;
             }
         });
 
-        return super.onCreateOptionsMenu(menu);
+        return true;
     }
-
-
-    /*private void performSearch(String s) {
-        String searchLowerCase = s.toLowerCase();
-        String searchUpperCase = s.toUpperCase();
-        FirebaseRecyclerOptions<CafeModule> options =
-                new FirebaseRecyclerOptions.Builder<CafeModule>()
-                        .setQuery(
-                                FirebaseDatabase.getInstance().getReference()
-                                        .child("cafes")
-                                        .orderByChild("name")
-                                        .startAt(searchLowerCase)
-                                        .endAt(searchLowerCase + "\uf8ff"), CafeModule.class)
-                        .build();
-
-        adapter = new CafeAdapter(options, user, cartListeneur);
-        adapter.startListening();
-        recyclerView.setAdapter(adapter);
-    }*/
 
 
 

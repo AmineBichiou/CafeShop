@@ -12,8 +12,6 @@
         app:showAsAction="always"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
 
-
-
         ></item>
 
 
