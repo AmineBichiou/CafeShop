@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "730376374431",
+    "firebase_url": "https://cafe-66228-default-rtdb.firebaseio.com",
+    "project_id": "cafe-66228",
+    "storage_bucket": "cafe-66228.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:730376374431:android:53173d3893dcbadb28faaa",
+        "android_client_info": {
+          "package_name": "com.example.myapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAe3LW_bOH2GCftCWaDos-akta9oZGhxLY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
