@@ -9,9 +9,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,6 +27,7 @@ import com.example.myapplication.listeneur.CafeListeneur;
 import com.example.myapplication.listeneur.CartListeneur;
 import com.example.myapplication.listeneur.SupplementListeneur;
 import com.example.myapplication.userActs.Login;
+import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -53,6 +56,8 @@ public class Supplement extends AppCompatActivity implements CartListeneur, Supp
     CartListeneur cartListeneur;
     SupplementListeneur supplementListeneur;
     List<SupplementModule> supplementModuleList = new ArrayList<>();
+    DrawerLayout drawerLayout;
+    public ActionBarDrawerToggle actionBarDrawerToggle;
 
 
     @Override
@@ -81,11 +86,17 @@ public class Supplement extends AppCompatActivity implements CartListeneur, Supp
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         auth = FirebaseAuth.getInstance();
-        logout = findViewById(R.id.logout);
-        btnAddCart = findViewById(R.id.addCart);
+        //logout = findViewById(R.id.logout);
+        //btnAddCart = findViewById(R.id.addCart);
         recyclerView = findViewById(R.id.recyclerView);
         supplementListeneur = this;
         cartListeneur = this;
+
+        drawerLayout = findViewById(R.id.my_drawer_layout);
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.nav_open, R.string.nav_close);
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         loadCafeFromFireBase();
         countCartItems();
@@ -101,14 +112,52 @@ public class Supplement extends AppCompatActivity implements CartListeneur, Supp
             getSupportActionBar().setTitle("        Welcome " + username);
         }
 
-        logout.setOnClickListener(v -> {
+        /*logout.setOnClickListener(v -> {
             auth.signOut();
             Intent intent = new Intent(Supplement.this, Login.class);
             startActivity(intent);
-        });
+        });*/
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-        btnAddCart.setOnClickListener(v -> startActivity(new Intent(Supplement.this, Cart.class)));
+        //btnAddCart.setOnClickListener(v -> startActivity(new Intent(Supplement.this, Cart.class)));
 
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Log.d("TAG", "onNavigationItemSelected: "+item.getTitle());
+                if(item.getTitle().equals("Home")){
+                    Intent intent = new Intent(Supplement.this, Cafe.class);
+                    startActivity(intent);
+
+                }
+                if(item.getTitle().equals("Cart")){
+                    Intent intent = new Intent(Supplement.this, Cart.class);
+                    startActivity(intent);
+                }
+                if(item.getTitle().equals("Cafe")){
+                    Intent intent = new Intent(Supplement.this, Cafe.class);
+                    startActivity(intent);
+                }
+                if(item.getTitle().equals("Supplements")){
+                    Intent intent = new Intent(Supplement.this, Supplement.class);
+                    startActivity(intent);
+                }
+                if(item.getTitle().equals("Logout")){
+                    auth.signOut();
+                    Intent intent = new Intent(Supplement.this, Login.class);
+                    startActivity(intent);
+                }
+                return false;
+            }
+        });
+
+    }
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void loadCafeFromFireBase() {

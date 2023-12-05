@@ -30,21 +30,21 @@
             android:id="@+id/recyclerView"
             android:layout_marginTop="115dp"/>
 
-        <ImageView
+        <!--<ImageView
             android:id="@+id/logout"
             android:layout_width="44dp"
             android:layout_height="62dp"
             android:src="@drawable/exit"
             android:text="Logout"
-            android:layout_marginLeft="20dp"/>
+            android:layout_marginLeft="20dp"/>-->
 
-        <ImageView
+        <!--<ImageView
             android:id="@+id/addCart"
             android:layout_width="44dp"
             android:layout_height="62dp"
             android:src="@drawable/shoping"
             android:layout_marginLeft="300dp"
-            android:text="Logout" />
+            android:text="Logout" />-->
 
     </RelativeLayout>
 

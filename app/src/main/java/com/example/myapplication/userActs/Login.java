@@ -75,7 +75,7 @@ public class Login extends AppCompatActivity {
                                     progressBar.setVisibility(v.GONE);
                                     if (task.isSuccessful()) {
                                         Log.d(TAG, "signInWithEmail:success");
-                                        Intent intent = new Intent(Login.this, Supplement.class);
+                                        Intent intent = new Intent(Login.this, Cafe.class);
                                         startActivity(intent);
 
                                         FirebaseUser user = auth.getCurrentUser();

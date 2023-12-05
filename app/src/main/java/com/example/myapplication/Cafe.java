@@ -13,6 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -90,25 +91,20 @@ public class Cafe extends AppCompatActivity implements CartListeneur, CafeListen
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         auth = FirebaseAuth.getInstance();
-        logout = findViewById(R.id.logout);
-        btnAddCart = findViewById(R.id.addCart);
+        //logout = findViewById(R.id.logout);
+        //btnAddCart = findViewById(R.id.addCart);
         recyclerView = findViewById(R.id.recyclerView);
+        drawerLayout = findViewById(R.id.my_drawer_layout);
+
         drawerLayout = findViewById(R.id.my_drawer_layout);
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.nav_open, R.string.nav_close);
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
-
-
         cartListeneur = this;
         cafeListeneur = this;
         loadCafeFromFireBase();
-
-
-
-
         user = auth.getCurrentUser();
         if (user == null) {
             Intent intent = new Intent(Cafe.this, Login.class);
@@ -121,11 +117,11 @@ public class Cafe extends AppCompatActivity implements CartListeneur, CafeListen
             getSupportActionBar().setTitle("        Welcome " + username);
         }
 
-        logout.setOnClickListener(v -> {
+        /*logout.setOnClickListener(v -> {
             auth.signOut();
             Intent intent = new Intent(Cafe.this, Login.class);
             startActivity(intent);
-        });
+        });*/
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         /*FirebaseRecyclerOptions<CafeModule> options =
                 new FirebaseRecyclerOptions.Builder<CafeModule>()
@@ -134,18 +130,51 @@ public class Cafe extends AppCompatActivity implements CartListeneur, CafeListen
         adapter = new CafeAdapter( this, options, user, cartListeneur);
         recyclerView.setAdapter(adapter);*/
         countCartItems();
-        btnAddCart.setOnClickListener(v -> startActivity(new Intent(Cafe.this, Cart.class)));
+        //btnAddCart.setOnClickListener(v -> startActivity(new Intent(Cafe.this, Cart.class)));
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Log.d("TAG", "onNavigationItemSelected: "+item.getTitle());
+                if(item.getTitle().equals("Home")){
+                    Intent intent = new Intent(Cafe.this, Cafe.class);
+                    startActivity(intent);
+
+                }
+                if(item.getTitle().equals("Cart")){
+                    Intent intent = new Intent(Cafe.this, Cart.class);
+                    startActivity(intent);
+                }
+                if(item.getTitle().equals("Cafe")){
+                    Intent intent = new Intent(Cafe.this, Cafe.class);
+                    startActivity(intent);
+                }
+                if(item.getTitle().equals("Supplements")){
+                    Intent intent = new Intent(Cafe.this, Supplement.class);
+                    startActivity(intent);
+                }
+                if(item.getTitle().equals("Logout")){
+                    auth.signOut();
+                    Intent intent = new Intent(Cafe.this, Login.class);
+                    startActivity(intent);
+                }
+                return false;
+            }
+        });
 
 
     }
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-
         if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
+
+
+
+
     private void loadCafeFromFireBase() {
         cafeModuleList = new ArrayList<>();
         FirebaseDatabase.getInstance().getReference().child("cafes")
@@ -204,15 +233,14 @@ public class Cafe extends AppCompatActivity implements CartListeneur, CafeListen
             public boolean onQueryTextSubmit(String query) {
                 return false;
             }
-
             @Override
             public boolean onQueryTextChange(String newText) {
                 searchCafe(newText);
                 return true;
             }
         });
-
         return true;
+
     }
 
 
