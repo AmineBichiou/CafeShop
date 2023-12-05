@@ -54,7 +54,7 @@ public class Cafe extends AppCompatActivity implements CartListeneur, CafeListen
     RecyclerView recyclerView;
     CafeAdapter adapter;
     Toolbar toolbar;
-    ImageView btnAddCart;
+    ImageView btnAddCart,add;
     CafeListeneur cafeListeneur;
     CartListeneur cartListeneur;
     DrawerLayout drawerLayout;
@@ -93,6 +93,8 @@ public class Cafe extends AppCompatActivity implements CartListeneur, CafeListen
         auth = FirebaseAuth.getInstance();
         //logout = findViewById(R.id.logout);
         //btnAddCart = findViewById(R.id.addCart);
+
+        add = findViewById(R.id.add);
         recyclerView = findViewById(R.id.recyclerView);
         drawerLayout = findViewById(R.id.my_drawer_layout);
 
@@ -117,20 +119,13 @@ public class Cafe extends AppCompatActivity implements CartListeneur, CafeListen
             getSupportActionBar().setTitle("        Welcome " + username);
         }
 
-        /*logout.setOnClickListener(v -> {
-            auth.signOut();
-            Intent intent = new Intent(Cafe.this, Login.class);
-            startActivity(intent);
-        });*/
+
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-        /*FirebaseRecyclerOptions<CafeModule> options =
-                new FirebaseRecyclerOptions.Builder<CafeModule>()
-                        .setQuery(FirebaseDatabase.getInstance().getReference().child("cafes"), CafeModule.class)
-                        .build();
-        adapter = new CafeAdapter( this, options, user, cartListeneur);
-        recyclerView.setAdapter(adapter);*/
+        add.setOnClickListener(v -> {
+            Intent intent = new Intent(Cafe.this, addCafe.class);
+            startActivity(intent);
+        });
         countCartItems();
-        //btnAddCart.setOnClickListener(v -> startActivity(new Intent(Cafe.this, Cart.class)));
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -211,7 +206,7 @@ public class Cafe extends AppCompatActivity implements CartListeneur, CafeListen
     private void searchCafe(String query) {
         List<CafeModule> filteredCafes = new ArrayList<>();
         for (CafeModule cafe : cafeModuleList) {
-            if (cafe.getName().toLowerCase().contains(query.toLowerCase())) {
+            if (cafe != null && cafe.getName() != null && cafe.getName().toLowerCase().contains(query.toLowerCase())) {
                 filteredCafes.add(cafe);
             }
         }

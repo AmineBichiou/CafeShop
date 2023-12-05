@@ -52,7 +52,7 @@ public class Supplement extends AppCompatActivity implements CartListeneur, Supp
     RecyclerView recyclerView;
     SupplementAdapter adapter;
     Toolbar toolbar;
-    ImageView btnAddCart;
+    ImageView btnAddCart,add;
     CartListeneur cartListeneur;
     SupplementListeneur supplementListeneur;
     List<SupplementModule> supplementModuleList = new ArrayList<>();
@@ -118,6 +118,11 @@ public class Supplement extends AppCompatActivity implements CartListeneur, Supp
             startActivity(intent);
         });*/
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        add = findViewById(R.id.add);
+        add.setOnClickListener(v -> {
+            Intent intent = new Intent(Supplement.this, addSupplement.class);
+            startActivity(intent);
+        });
         //btnAddCart.setOnClickListener(v -> startActivity(new Intent(Supplement.this, Cart.class)));
 
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -237,7 +242,7 @@ public class Supplement extends AppCompatActivity implements CartListeneur, Supp
                     }
                 });
     }
-    private void searchCafe(String query) {
+    private void searchSupplement(String query) {
         List<SupplementModule> filteredSupps = new ArrayList<>();
         for (SupplementModule supp : supplementModuleList) {
             if (supp.getName().toLowerCase().contains(query.toLowerCase())) {
@@ -264,7 +269,7 @@ public class Supplement extends AppCompatActivity implements CartListeneur, Supp
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                searchCafe(newText);
+                searchSupplement(newText);
                 return true;
             }
         });

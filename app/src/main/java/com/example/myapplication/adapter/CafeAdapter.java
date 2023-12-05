@@ -6,6 +6,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -27,6 +30,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.orhanobut.dialogplus.DialogPlus;
+import com.orhanobut.dialogplus.ViewHolder;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -39,6 +44,8 @@ public class CafeAdapter extends RecyclerView.Adapter<CafeAdapter.myCafeViewHold
     private FirebaseUser user;
     private List<CafeModule> cafeModuleList;
     private CartListeneur cardLoadListener;
+
+    private ImageView btnEdit, btnDelete;
 
     Context context;
 
@@ -62,8 +69,12 @@ public class CafeAdapter extends RecyclerView.Adapter<CafeAdapter.myCafeViewHold
             img = itemView.findViewById(R.id.img1);
             name = itemView.findViewById(R.id.name);
             price = itemView.findViewById(R.id.price);
+            btnEdit = itemView.findViewById(R.id.edit);
+            btnDelete = itemView.findViewById(R.id.supp);
             itemView.setOnClickListener(this);
         }
+
+
 
 
         @Override
@@ -147,7 +158,82 @@ public class CafeAdapter extends RecyclerView.Adapter<CafeAdapter.myCafeViewHold
         holder.setListener((view, adapterPosition) -> {
             addToCard(cafeModuleList.get(adapterPosition));
         });
+        btnEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final DialogPlus dialogPlus = DialogPlus.newDialog(context)
+                        .setContentHolder(new ViewHolder(R.layout.update_cafe))
+                        .setExpanded(true, 1100)
+                        .create();
+                //dialogPlus.show();
+
+                View view = dialogPlus.getHolderView();
+                EditText name = view.findViewById(R.id.name);
+                EditText price = view.findViewById(R.id.price);
+                EditText img = view.findViewById(R.id.img);
+
+                name.setText(cafeModuleList.get(position).getName());
+                price.setText(String.valueOf(cafeModuleList.get(position).getPrice()));
+                img.setText(cafeModuleList.get(position).getImg());
+                dialogPlus.show();
+                Button btnUpdate = view.findViewById(R.id.up);
+
+                btnUpdate.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int adapterPosition = holder.getAdapterPosition();
+                        if (adapterPosition != RecyclerView.NO_POSITION) {
+                            Map<String, Object> map = new HashMap<>();
+                            map.put("name", name.getText().toString());
+                            map.put("price", Float.parseFloat(price.getText().toString()));
+                            map.put("img", img.getText().toString());
+
+                            FirebaseDatabase.getInstance().getReference().child("cafes").child(cafeModuleList.get(adapterPosition).getKey()).updateChildren(map)
+                                    .addOnSuccessListener(aVoid -> {
+                                        dialogPlus.dismiss();
+                                        cardLoadListener.onCartLoadFailed("Update Success");
+                                        notifyDataSetChanged();
+
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        dialogPlus.dismiss();
+                                        cardLoadListener.onCartLoadFailed(e.getMessage());
+                                    });
+                        }
+                    }
+                });
+
+            }
+
+
+
+
+        });
+        btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int adapterPosition = holder.getAdapterPosition();
+                if (adapterPosition != RecyclerView.NO_POSITION) {
+                    FirebaseDatabase.getInstance().getReference().child("cafes").child(cafeModuleList.get(adapterPosition).getKey()).removeValue()
+                            .addOnSuccessListener(aVoid -> {
+                                cardLoadListener.onCartLoadFailed("Delete Success");
+                                notifyDataSetChanged();
+                            })
+                            .addOnFailureListener(e -> {
+                                cardLoadListener.onCartLoadFailed(e.getMessage());
+                            });
+                }
+            }
+        });
     }
+   /* private void updateFireBase(CafeModule cafeModule) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String userId = user.getUid();
+        FirebaseDatabase.getInstance().getReference("cafes").child(userId).child(cafeModule.getKey())
+                .setValue(cafeModule)
+                .addOnSuccessListener(aVoid -> EventBus.getDefault().postSticky(new MyUpdateCartEvent()));
+
+    }*/
 
     @Override
     public int getItemCount() {

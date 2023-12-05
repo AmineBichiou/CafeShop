@@ -9,7 +9,7 @@
         android:id="@+id/textTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Ajouter un article"
+        android:text="Ajouter un Supplement"
         android:textSize="24sp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="34dp"

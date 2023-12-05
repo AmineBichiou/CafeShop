@@ -20,6 +20,14 @@ public class CafeModule {
 
     public CafeModule() {
     }
+
+public CafeModule(String name, double price, String img) {
+        this.name = name;
+        this.price = price;
+        this.img = img;
+    }
+
+
     public String getKey() {
         return key;
     }
