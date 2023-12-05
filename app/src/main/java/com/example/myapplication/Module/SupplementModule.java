@@ -1,24 +1,12 @@
 package com.example.myapplication.Module;
 
-import android.util.Log;
-
-import androidx.annotation.NonNull;
-
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.ArrayList;
-import java.util.List;
-
-public class CafeModule {
-
+public class SupplementModule {
     private String key;
     private String name;
     private double price;
     private String img;
 
-    public CafeModule() {
+    public SupplementModule() {
     }
     public String getKey() {
         return key;
@@ -52,6 +40,4 @@ public class CafeModule {
     public void setImg(String img) {
         this.img = img;
     }
-
 }
-

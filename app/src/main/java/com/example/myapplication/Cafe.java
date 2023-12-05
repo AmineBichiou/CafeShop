@@ -11,7 +11,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
@@ -25,6 +27,7 @@ import com.example.myapplication.listeneur.CafeListeneur;
 import com.example.myapplication.listeneur.CartListeneur;
 import com.example.myapplication.userActs.Login;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -53,7 +56,11 @@ public class Cafe extends AppCompatActivity implements CartListeneur, CafeListen
     ImageView btnAddCart;
     CafeListeneur cafeListeneur;
     CartListeneur cartListeneur;
+    DrawerLayout drawerLayout;
     List<CafeModule> cafeModuleList = new ArrayList<>();
+
+
+    public ActionBarDrawerToggle actionBarDrawerToggle;
 
     @Override
     protected void onStart() {
@@ -77,17 +84,29 @@ public class Cafe extends AppCompatActivity implements CartListeneur, CafeListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
+
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         auth = FirebaseAuth.getInstance();
         logout = findViewById(R.id.logout);
         btnAddCart = findViewById(R.id.addCart);
         recyclerView = findViewById(R.id.recyclerView);
+        drawerLayout = findViewById(R.id.my_drawer_layout);
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.nav_open, R.string.nav_close);
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
+
 
         cartListeneur = this;
         cafeListeneur = this;
         loadCafeFromFireBase();
+
+
 
 
         user = auth.getCurrentUser();
@@ -115,10 +134,17 @@ public class Cafe extends AppCompatActivity implements CartListeneur, CafeListen
         adapter = new CafeAdapter( this, options, user, cartListeneur);
         recyclerView.setAdapter(adapter);*/
         countCartItems();
-        btnAddCart.setOnClickListener(v -> startActivity(new Intent(Cafe.this, Cart.class))
-        );
+        btnAddCart.setOnClickListener(v -> startActivity(new Intent(Cafe.this, Cart.class)));
 
 
+    }
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
     private void loadCafeFromFireBase() {
         cafeModuleList = new ArrayList<>();
@@ -247,6 +273,7 @@ public class Cafe extends AppCompatActivity implements CartListeneur, CafeListen
 
     @Override
     public void onCafeLoadFailed(String message) {
+
 
     }
 }

@@ -28,6 +28,7 @@
         <activity android:name=".userActs.SignUp" />
         <activity android:name=".Cafe"/>
         <activity android:name=".Cart"/>
+        <activity android:name=".Supplement"/>
     </application>
     <!--<uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.INTERNET" />

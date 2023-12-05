@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    android:gravity="center">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:tooltipText="Search"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:id="@+id/recyclerView"
+        android:layout_marginTop="115dp"
+        >
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+    <ImageView
+        android:id="@+id/logout"
+        android:layout_width="44dp"
+        android:layout_height="62dp"
+        android:src="@drawable/exit"
+        android:text="Logout"
+        android:layout_marginLeft="20dp"
+        />
+    <ImageView
+        android:id="@+id/addCart"
+        android:layout_width="44dp"
+        android:layout_height="62dp"
+        android:src="@drawable/shoping"
+        android:layout_marginLeft="300dp"
+        android:text="Logout" />
+
+
+
+
+</RelativeLayout>

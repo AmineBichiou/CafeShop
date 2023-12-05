@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.myapplication.Cafe;
 import com.example.myapplication.R;
+import com.example.myapplication.Supplement;
 import com.google.firebase.auth.FirebaseAuth;
 import androidx.annotation.NonNull;
 
@@ -74,7 +75,7 @@ public class Login extends AppCompatActivity {
                                     progressBar.setVisibility(v.GONE);
                                     if (task.isSuccessful()) {
                                         Log.d(TAG, "signInWithEmail:success");
-                                        Intent intent = new Intent(Login.this, Cafe.class);
+                                        Intent intent = new Intent(Login.this, Supplement.class);
                                         startActivity(intent);
 
                                         FirebaseUser user = auth.getCurrentUser();
