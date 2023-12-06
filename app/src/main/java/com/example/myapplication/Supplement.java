@@ -91,6 +91,7 @@ public class Supplement extends AppCompatActivity implements CartListeneur, Supp
         recyclerView = findViewById(R.id.recyclerView);
         supplementListeneur = this;
         cartListeneur = this;
+        add = findViewById(R.id.add);
 
         drawerLayout = findViewById(R.id.my_drawer_layout);
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.nav_open, R.string.nav_close);
@@ -118,7 +119,7 @@ public class Supplement extends AppCompatActivity implements CartListeneur, Supp
             startActivity(intent);
         });*/
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-        add = findViewById(R.id.add);
+
         add.setOnClickListener(v -> {
             Intent intent = new Intent(Supplement.this, addSupplement.class);
             startActivity(intent);

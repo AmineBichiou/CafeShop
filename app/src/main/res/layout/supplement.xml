@@ -15,7 +15,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background"
-    android:gravity="center">
+    android:gravity="center"
+    android:id="@+id/mainAct">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"

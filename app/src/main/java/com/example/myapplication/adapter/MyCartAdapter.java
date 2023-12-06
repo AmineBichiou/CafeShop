@@ -107,13 +107,15 @@ public class MyCartAdapter extends RecyclerView.Adapter<MyCartAdapter.MyCartView
         }
 
         private void minusCartItem(MyCartViewHolder holder, CartModule cartModule) {
-                Log.d("Before Minus", "minusCartItem: "+cartModule.getQuantity());
-                if(cartModule.getQuantity() >= 1){
+                if(cartModule.getQuantity() >= 1) {
                         cartModule.setQuantity(cartModule.getQuantity()-1);
                         cartModule.setTotalPrice((float) (cartModule.getPrice() * cartModule.getQuantity()));
                         holder.quantity.setText(new StringBuilder().append(cartModule.getQuantity()));
                         updateFireBase(cartModule);
 
+                }
+                if(cartModule.getQuantity() == 0){
+                        deleteFromFireBase(cartModule);
                 }
         }
         private void addCartItem(MyCartViewHolder holder, CartModule cartModule) {

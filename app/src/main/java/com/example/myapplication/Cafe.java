@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -23,6 +24,7 @@ import androidx.appcompat.widget.SearchView;
 import com.example.myapplication.Module.CafeModule;
 import com.example.myapplication.Module.CartModule;
 import com.example.myapplication.adapter.CafeAdapter;
+import com.example.myapplication.eventbus.MyUpdateCafeEvent;
 import com.example.myapplication.eventbus.MyUpdateCartEvent;
 import com.example.myapplication.listeneur.CafeListeneur;
 import com.example.myapplication.listeneur.CartListeneur;
@@ -54,6 +56,7 @@ public class Cafe extends AppCompatActivity implements CartListeneur, CafeListen
     RecyclerView recyclerView;
     CafeAdapter adapter;
     Toolbar toolbar;
+    RelativeLayout cafelayout;
     ImageView btnAddCart,add;
     CafeListeneur cafeListeneur;
     CartListeneur cartListeneur;
@@ -67,6 +70,7 @@ public class Cafe extends AppCompatActivity implements CartListeneur, CafeListen
     protected void onStart() {
         super.onStart();
         EventBus.getDefault().register(this);
+
     }
 
     @Override
@@ -74,13 +78,18 @@ public class Cafe extends AppCompatActivity implements CartListeneur, CafeListen
         if(EventBus.getDefault().hasSubscriberForEvent(MyUpdateCartEvent.class))
             EventBus.getDefault().removeStickyEvent(MyUpdateCartEvent.class);
         EventBus.getDefault().unregister(this);
+
         super.onStop();
 
     }
+
+
     @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
     public void onUpdateCart(MyUpdateCartEvent event){
         countCartItems();
     }
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +98,7 @@ public class Cafe extends AppCompatActivity implements CartListeneur, CafeListen
         setContentView(R.layout.activity_main);
 
         toolbar = findViewById(R.id.toolbar);
+        cafelayout = findViewById(R.id.mainAct);
         setSupportActionBar(toolbar);
         auth = FirebaseAuth.getInstance();
         //logout = findViewById(R.id.logout);
@@ -96,36 +106,14 @@ public class Cafe extends AppCompatActivity implements CartListeneur, CafeListen
 
         add = findViewById(R.id.add);
         recyclerView = findViewById(R.id.recyclerView);
-        drawerLayout = findViewById(R.id.my_drawer_layout);
 
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         drawerLayout = findViewById(R.id.my_drawer_layout);
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.nav_open, R.string.nav_close);
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        cartListeneur = this;
-        cafeListeneur = this;
-        loadCafeFromFireBase();
-        user = auth.getCurrentUser();
-        if (user == null) {
-            Intent intent = new Intent(Cafe.this, Login.class);
-            startActivity(intent);
-
-        } else {
-            String[] emailParts = user.getEmail().split("@");
-            String username = emailParts[0];
-
-            getSupportActionBar().setTitle("        Welcome " + username);
-        }
-
-
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-        add.setOnClickListener(v -> {
-            Intent intent = new Intent(Cafe.this, addCafe.class);
-            startActivity(intent);
-        });
-        countCartItems();
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -157,6 +145,40 @@ public class Cafe extends AppCompatActivity implements CartListeneur, CafeListen
             }
         });
 
+        cartListeneur = this;
+        cafeListeneur = this;
+        loadCafeFromFireBase();
+        user = auth.getCurrentUser();
+        Log.d("TAG", "getMail: "+user.getEmail());
+
+        if(user.getEmail().equals("admin@gmail.com")){
+            add.setVisibility(View.VISIBLE);
+        }
+        else{
+            add.setVisibility(View.GONE);
+        }
+
+
+        if (user == null) {
+            Intent intent = new Intent(Cafe.this, Login.class);
+            startActivity(intent);
+
+        } else {
+            String[] emailParts = user.getEmail().split("@");
+            String username = emailParts[0];
+
+            getSupportActionBar().setTitle("        Welcome " + username);
+        }
+
+
+
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        add.setOnClickListener(v -> {
+            Intent intent = new Intent(Cafe.this, addCafe.class);
+            startActivity(intent);
+        });
+        countCartItems();
+
 
     }
     @Override
@@ -166,8 +188,6 @@ public class Cafe extends AppCompatActivity implements CartListeneur, CafeListen
         }
         return super.onOptionsItemSelected(item);
     }
-
-
 
 
     private void loadCafeFromFireBase() {
@@ -183,6 +203,8 @@ public class Cafe extends AppCompatActivity implements CartListeneur, CafeListen
                                     if (cafeModule != null) {
                                         cafeModule.setKey(cafeSnapshot.getKey());
                                         cafeModuleList.add(cafeModule);
+                                        cafeListeneur.onCafeLoadSuccess(cafeModuleList);
+
                                     } else {
                                         Log.e("DataConversion", "Failed to convert CafeModule at key: " + cafeSnapshot.getKey());
                                     }
@@ -289,14 +311,16 @@ public class Cafe extends AppCompatActivity implements CartListeneur, CafeListen
 
     @Override
     public void onCafeLoadSuccess(List<CafeModule> cafeModuleList) {
+        this.cafeModuleList = cafeModuleList;
         adapter = new CafeAdapter(this, cafeModuleList, cartListeneur);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        adapter.notifyDataSetChanged();
     }
 
     @Override
     public void onCafeLoadFailed(String message) {
-
+        Snackbar.make(cafelayout,message,Snackbar.LENGTH_LONG).show();
 
     }
 }

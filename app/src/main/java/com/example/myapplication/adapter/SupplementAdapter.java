@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,6 +23,7 @@ import com.example.myapplication.Supplement;
 import com.example.myapplication.eventbus.MyUpdateCartEvent;
 import com.example.myapplication.listeneur.CartListeneur;
 import com.example.myapplication.listeneur.IRecycleViewClickListener;
+import com.example.myapplication.listeneur.SupplementListeneur;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -34,6 +36,7 @@ import com.orhanobut.dialogplus.ViewHolder;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +48,7 @@ public class SupplementAdapter extends RecyclerView.Adapter<SupplementAdapter.my
     private List<SupplementModule> supplementModuleList;
     private CartListeneur cardLoadListener;
     private ImageView btnEdit, btnDelete;
+    SupplementListeneur suppLoadListener;
 
     Context context;
     public SupplementAdapter(Context context, List<SupplementModule> supplementModuleList, CartListeneur cardLoadListener) {
@@ -58,6 +62,8 @@ public class SupplementAdapter extends RecyclerView.Adapter<SupplementAdapter.my
         TextView name, price;
 
         IRecycleViewClickListener listener;
+        ImageView btnEdit, btnDelete;
+
 
         public void setListener(IRecycleViewClickListener listener) {
             this.listener = listener;
@@ -99,14 +105,33 @@ public class SupplementAdapter extends RecyclerView.Adapter<SupplementAdapter.my
         holder.setListener((view, adapterPosition) -> {
             addToCard(supplementModuleList.get(adapterPosition));
         });
-        btnEdit.setOnClickListener(new View.OnClickListener() {
+        FirebaseUser user;
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
+        Log.d("TAG", "getMail: "+user.getEmail());
+
+        if(user.getEmail().equals("admin@gmail.com")){
+            if (holder.btnEdit != null) {
+                holder.btnEdit.setVisibility(View.VISIBLE);
+            }
+            if (holder.btnDelete != null) {
+                holder.btnDelete.setVisibility(View.VISIBLE);
+            }
+        } else {
+            if (holder.btnEdit != null) {
+                holder.btnEdit.setVisibility(View.GONE);
+            }
+            if (holder.btnDelete != null) {
+                holder.btnDelete.setVisibility(View.GONE);
+            }
+        }
+        holder.btnEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final DialogPlus dialogPlus = DialogPlus.newDialog(context)
                         .setContentHolder(new ViewHolder(R.layout.update_cafe))
                         .setExpanded(true, 1100)
                         .create();
-                //dialogPlus.show();
 
                 View view = dialogPlus.getHolderView();
                 EditText name = view.findViewById(R.id.name);
@@ -129,39 +154,46 @@ public class SupplementAdapter extends RecyclerView.Adapter<SupplementAdapter.my
                             map.put("price", Float.parseFloat(price.getText().toString()));
                             map.put("img", img.getText().toString());
 
-                            FirebaseDatabase.getInstance().getReference().child("cafes").child(supplementModuleList.get(adapterPosition).getKey()).updateChildren(map)
+                            FirebaseDatabase.getInstance().getReference().child("supplement").child(supplementModuleList.get(adapterPosition).getKey()).updateChildren(map)
                                     .addOnSuccessListener(aVoid -> {
-                                        dialogPlus.dismiss();
-                                        cardLoadListener.onCartLoadFailed("Update Success");
-                                        notifyDataSetChanged();
+                                        SupplementModule updatedModule = supplementModuleList.get(adapterPosition);
+                                        updatedModule.setName(name.getText().toString());
+                                        updatedModule.setPrice(Float.parseFloat(price.getText().toString()));
+                                        updatedModule.setImg(img.getText().toString());
+                                        notifyItemChanged(adapterPosition);
 
+                                        Toast.makeText(holder.name.getContext(), "Item updated successfully", Toast.LENGTH_SHORT).show();
+                                        dialogPlus.dismiss();
                                     })
                                     .addOnFailureListener(e -> {
-                                        dialogPlus.dismiss();
-                                        cardLoadListener.onCartLoadFailed(e.getMessage());
+                                        Toast.makeText(holder.name.getContext(), "Failed to update item", Toast.LENGTH_SHORT).show();
                                     });
                         }
                     }
                 });
-
             }
-
-
-
-
         });
-        btnDelete.setOnClickListener(new View.OnClickListener() {
+        holder.btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int adapterPosition = holder.getAdapterPosition();
                 if (adapterPosition != RecyclerView.NO_POSITION) {
-                    FirebaseDatabase.getInstance().getReference().child("cafes").child(supplementModuleList.get(adapterPosition).getKey()).removeValue()
+                    FirebaseDatabase.getInstance().getReference().child("supplement")
+                            .child(supplementModuleList.get(adapterPosition).getKey())
+                            .removeValue()
                             .addOnSuccessListener(aVoid -> {
-                                cardLoadListener.onCartLoadFailed("Delete Success");
+                                if (suppLoadListener != null) {
+                                    suppLoadListener.onSuppLoadSuccess(Collections.emptyList());
+                                    suppLoadListener.onSuppLoadFailed("Delete Success");
+                                }
+
+                                supplementModuleList.remove(adapterPosition);
                                 notifyDataSetChanged();
                             })
                             .addOnFailureListener(e -> {
-                                cardLoadListener.onCartLoadFailed(e.getMessage());
+                                if (suppLoadListener != null) {
+                                    suppLoadListener.onSuppLoadFailed(e.getMessage());
+                                }
                             });
                 }
             }
