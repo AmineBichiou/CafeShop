@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="HardcodedText"
+
+
+    >
+    <group
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_account"
+            android:title="Home"
+            android:icon="@drawable/home"
+
+            />
+        <item
+            android:id="@+id/nav_cafe"
+            android:title="Cafe"
+            android:icon="@drawable/cafe"/>
+        <item
+            android:id="@+id/nav_supplements"
+            android:title="Supplements"
+            android:icon="@drawable/supp"/>
+        <item
+            android:id="@+id/nav_cart"
+            android:title="Cart"
+            android:icon="@drawable/cart"/>
+    </group>
+    <item
+        android:title="">
+
+        <menu>
+            <item
+                android:id="@+id/nav_logout"
+                android:title="Logout"
+                android:icon="@drawable/exit"
+                /></menu>
+    </item>
+
+</menu>

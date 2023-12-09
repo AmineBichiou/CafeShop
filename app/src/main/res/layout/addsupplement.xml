@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    >
+
+    <TextView
+        android:id="@+id/textTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ajouter un Supplement"
+        android:textSize="24sp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="34dp"
+        android:textColor="@android:color/black"/>
+
+    <LinearLayout
+        android:layout_width="352dp"
+        android:layout_height="388dp"
+        android:layout_below="@id/textTitle"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="105dp"
+        android:layout_marginEnd="32dp"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="#ECE1CF"
+            android:hint="Nom de l'article"
+            android:inputType="text"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:textColor="@android:color/black" />
+
+
+        <EditText
+            android:id="@+id/price"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:hint="Prix"
+            android:background="#ECE1CF"
+
+            android:inputType="numberDecimal"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:textColor="@android:color/black" />
+        <EditText
+            android:id="@+id/img"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="15dp"
+            android:background="#ECE1CF"
+            android:hint="img"
+            android:textSize="21dp"
+            android:inputType="text"
+            android:paddingStart="20dp"
+            android:paddingEnd="10dp"
+            android:textColor="@android:color/black" />
+
+        <Button
+            android:id="@+id/buttonAjouterImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:backgroundTint="#F7E1BC"
+            android:text="Ajouter une image"
+            android:textColor="@android:color/background_dark" />
+
+        <ImageView
+            android:id="@+id/imageViewArticle"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="24dp"
+            android:scaleType="centerCrop"
+            android:visibility="gone" />
+
+
+
+    </LinearLayout>
+    <Button
+        android:id="@+id/btnAdd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="500dp"
+        android:backgroundTint="#F7E1BC"
+        android:text="Ajouter l'article"
+        android:textColor="@android:color/background_dark" />
+
+</RelativeLayout>
