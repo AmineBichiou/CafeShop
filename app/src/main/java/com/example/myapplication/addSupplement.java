@@ -2,8 +2,10 @@ package com.example.myapplication;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,6 +22,7 @@ public class addSupplement  extends AppCompatActivity {
 
     SupplementAdapter adapter;
     SupplementListeneur suppListeneur;
+    ImageView back;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,6 +31,7 @@ public class addSupplement  extends AppCompatActivity {
         name = findViewById(R.id.name);
         price = findViewById(R.id.price);
         img = findViewById(R.id.img);
+        back = findViewById(R.id.goback);
 
         add.setOnClickListener(v ->  {
             String name1 = name.getText().toString();
@@ -38,9 +42,16 @@ public class addSupplement  extends AppCompatActivity {
             startActivity(intent);
 
         });
-
-
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent1 = new Intent(addSupplement.this, Supplement.class);
+                startActivity(intent1);
+            }
+        });
     }
+
+
     private void insertData(String name,double price,String img){
         FirebaseDatabase.getInstance().getReference().child("supplement").push()
                 .setValue(new CafeModule(name,price,img))

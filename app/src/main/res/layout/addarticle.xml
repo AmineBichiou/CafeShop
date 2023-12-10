@@ -24,6 +24,14 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="34dp"
         android:textColor="@android:color/black"/>
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/exit"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:id="@+id/goback"
+        ></ImageView>
 
     <LinearLayout
         android:layout_width="352dp"
@@ -74,14 +82,7 @@
             android:paddingEnd="10dp"
             android:textColor="@android:color/black" />
 
-        <Button
-            android:id="@+id/buttonAjouterImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:backgroundTint="#F7E1BC"
-            android:text="Ajouter une image"
-            android:textColor="@android:color/background_dark" />
+
 
         <ImageView
             android:id="@+id/imageViewArticle"

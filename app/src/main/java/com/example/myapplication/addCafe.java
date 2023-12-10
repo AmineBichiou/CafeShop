@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -27,6 +29,8 @@ public class addCafe extends AppCompatActivity {
     CafeAdapter adapter;
     CafeListeneur cafeListeneur;
 
+    ImageView back;
+
 
 
 
@@ -37,6 +41,8 @@ public class addCafe extends AppCompatActivity {
         name = findViewById(R.id.name);
         price = findViewById(R.id.price);
         img = findViewById(R.id.img);
+        back = findViewById(R.id.goback);
+
 
         add.setOnClickListener(v ->  {
             String name1 = name.getText().toString();
@@ -45,6 +51,15 @@ public class addCafe extends AppCompatActivity {
             insertData(name1,price1,img1);
             Intent intent = new Intent(addCafe.this, Cafe.class);
             startActivity(intent);
+
+
+        });
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent1 = new Intent(addCafe.this, Cafe.class);
+                startActivity(intent1);
+            }
         });
 
         }
