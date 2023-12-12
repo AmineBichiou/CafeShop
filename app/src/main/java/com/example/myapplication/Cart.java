@@ -47,6 +47,7 @@ public class Cart extends AppCompatActivity implements CartListeneur {
     RelativeLayout cartlayout;
 
     TextView total;
+    MyCartAdapter adapter;
 
     CartListeneur cartListeneur;
 
@@ -163,6 +164,7 @@ public class Cart extends AppCompatActivity implements CartListeneur {
                 if(snapshot.exists()){
 
                     for(DataSnapshot cartSnapshot:snapshot.getChildren()){
+
                         CartModule cartModule = cartSnapshot.getValue(CartModule.class);
                         cartModule.setKey(cartSnapshot.getKey());
                         cartModuleList.add(cartModule);
@@ -188,7 +190,7 @@ public class Cart extends AppCompatActivity implements CartListeneur {
             sum+=cartModule.getTotalPrice();
         }
         total.setText(new StringBuilder("Total: ").append(sum).append("DT"));
-        MyCartAdapter adapter = new MyCartAdapter(this,cartModuleList);
+        adapter = new MyCartAdapter(this,cartModuleList);
         recyclerCart.setAdapter(adapter);
     }
 

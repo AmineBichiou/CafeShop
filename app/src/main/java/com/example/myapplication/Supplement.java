@@ -2,9 +2,11 @@ package com.example.myapplication;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -103,6 +105,12 @@ public class Supplement extends AppCompatActivity implements CartListeneur, Supp
         loadCafeFromFireBase();
         countCartItems();
         user = auth.getCurrentUser();
+        if(user.getEmail().equals("admin@gmail.com")){
+            add.setVisibility(View.VISIBLE);
+        }
+        else{
+            add.setVisibility(View.GONE);
+        }
         if (user == null) {
             Intent intent = new Intent(Supplement.this, Login.class);
             startActivity(intent);
@@ -111,7 +119,7 @@ public class Supplement extends AppCompatActivity implements CartListeneur, Supp
             String[] emailParts = user.getEmail().split("@");
             String username = emailParts[0];
 
-            getSupportActionBar().setTitle("        Welcome " + username);
+            getSupportActionBar().setTitle(Html.fromHtml("<font color='#804000'>        Welcome " + username + "</font>"));
         }
 
         /*logout.setOnClickListener(v -> {

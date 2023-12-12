@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -163,12 +164,10 @@ public class Cafe extends AppCompatActivity implements CartListeneur, CafeListen
         if (user == null) {
             Intent intent = new Intent(Cafe.this, Login.class);
             startActivity(intent);
-
         } else {
             String[] emailParts = user.getEmail().split("@");
             String username = emailParts[0];
-
-            getSupportActionBar().setTitle("        Welcome " + username);
+            getSupportActionBar().setTitle(Html.fromHtml("<font color='#804000'>        Welcome " + username + "</font>"));
         }
 
 
